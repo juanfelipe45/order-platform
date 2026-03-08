@@ -1,0 +1,35 @@
+replicaCount: 1
+
+images:
+  apiGateway: api-gateway
+  orderService: order-service
+  inventoryService: inventory-service
+  notificationService: notification-service
+  rabbitmq: rabbitmq:3-management
+
+services:
+  apiGateway:
+    type: NodePort
+    port: 8080
+    targetPort: 8080
+    nodePort: 30080
+
+  orderService:
+    type: ClusterIP
+    port: 8081
+    targetPort: 8081
+
+  inventoryService:
+    type: ClusterIP
+    port: 8082
+    targetPort: 8082
+
+  notificationService:
+    type: ClusterIP
+    port: 8083
+    targetPort: 8083
+
+  rabbitmq:
+    type: ClusterIP
+    amqpPort: 5672
+    managementPort: 15672

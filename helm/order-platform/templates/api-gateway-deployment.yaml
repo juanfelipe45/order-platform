@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: {{ .Values.images.apiGateway }}
+          imagePullPolicy: Never
+          ports:
+            - containerPort: {{ .Values.services.apiGateway.targetPort }}
+          env:
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_URI
+              value: http://order-service:8081
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0
+              value: Path=/api/orders/**
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_0_FILTERS_0
+              value: StripPrefix=1
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_URI
+              value: http://inventory-service:8082
+            - name: SPRING_CLOUD_GATEWAY_ROUTES_1_PREDICATES_0
+              value: Path=/inventory/**
